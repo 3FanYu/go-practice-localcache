@@ -22,6 +22,7 @@ type value struct {
 	expiredAt time.Time
 }
 
+// returns a new instance of Cache
 func New() Cache {
 	if cacheInstance == nil {
 		once.Do(func() {
@@ -38,6 +39,7 @@ func New() Cache {
 	return cacheInstance
 }
 
+// takes a key and a value and sets new cache 
 func (c *cache) Set(k string, v interface{}) (e error) {
 	c.m.Lock()
 	defer c.m.Unlock()
@@ -47,6 +49,7 @@ func (c *cache) Set(k string, v interface{}) (e error) {
 	return
 }
 
+// finds and returns a value from the pool using given key
 func (c *cache) Get(k string) (v interface{}, e error) {
 	c.m.Lock()
 	defer c.m.Unlock()
