@@ -22,7 +22,7 @@ type value struct {
 	expiredAt time.Time
 }
 
-func New() *cache {
+func New() Cache {
 	if cacheInstance == nil {
 		once.Do(func() {
 			cacheInstance = &cache{
