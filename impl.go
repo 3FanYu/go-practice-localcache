@@ -6,9 +6,7 @@ import (
 )
 
 var (
-	cacheInstance  *cache
-	once           sync.Once
-	expiredIn      = 30 * time.Second
+	expiredIn = 30 * time.Second
 )
 
 type cache struct {
@@ -24,22 +22,17 @@ type value struct {
 
 // returns a new instance of Cache
 func New() Cache {
-	if cacheInstance == nil {
-		once.Do(func() {
-			cacheInstance = &cache{
-				pool: make(map[string]value),
-				nowFunc: func() time.Time {
-					return time.Now().Add(expiredIn)
-				},
-			}
-			go cacheInstance.spawnCacheChcker()
-		})
-		return cacheInstance
+	c := &cache{
+		pool: make(map[string]value),
+		nowFunc: func() time.Time {
+			return time.Now().Add(expiredIn)
+		},
 	}
-	return cacheInstance
+	go c.spawnCacheChcker()
+	return c
 }
 
-// takes a key and a value and sets new cache 
+// takes a key and a value and sets new cache
 func (c *cache) Set(k string, v interface{}) (e error) {
 	c.m.Lock()
 	defer c.m.Unlock()
