@@ -43,12 +43,14 @@ func (c *cache) Set(k string, v interface{}) (e error) {
 }
 
 // finds and returns a value from the pool using given key
-func (c *cache) Get(k string) (v interface{}, e error) {
+func (c *cache) Get(k string) (interface{}, error) {
 	c.m.Lock()
 	defer c.m.Unlock()
-	v = c.pool[k].data
-	e = nil
-	return
+	v, ok := c.pool[k]
+	if !ok {
+		return nil, NewKeyNotFoundError(k)
+	}
+	return v.data, nil
 }
 
 func (c *cache) spawnCacheChcker() {

@@ -64,6 +64,7 @@ func (suite *LocalCacheSuite) TestCacheExpiration() {
 	cache := New()
 	cache.Set(key, 1)
 	time.Sleep(1 * time.Second)
-	cd, _ := cache.Get(key)
+	cd, err := cache.Get(key)
 	require.Equal(suite.T(), nil, cd, "should be nil")
+	require.Equal(suite.T(), NewKeyNotFoundError(key), err, "should emit error")
 }
